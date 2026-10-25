@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}BusBook MY{% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+  <header>
+    <a class="brand" href="{{ url_for('pages.index') }}">BusBook MY</a>
+    <nav>
+      <a href="{{ url_for('pages.index') }}">Search</a>
+      <a href="{{ url_for('pages.lookup') }}">Manage booking</a>
+      <a href="{{ url_for('admin.dashboard') }}">Admin</a>
+    </nav>
+  </header>
+  <main>{% block content %}{% endblock %}</main>
+  {% block scripts %}{% endblock %}
+</body>
+</html>

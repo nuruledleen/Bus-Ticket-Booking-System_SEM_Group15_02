@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Book bus tickets</h1>
+<form class="card search" method="get" action="{{ url_for('pages.index') }}">
+  <label>From <input name="origin" list="cities" value="{{ form.origin }}" required></label>
+  <label>To <input name="destination" list="cities" value="{{ form.destination }}" required></label>
+  <label>Date <input type="date" name="date" min="{{ today }}" value="{{ form.date or today }}" required></label>
+  <button type="submit">Search</button>
+  <datalist id="cities">{% for city in cities %}<option value="{{ city }}">{% endfor %}</datalist>
+</form>
+{% for message in errors.values() %}<p class="error">{{ message }}</p>{% endfor %}
+
+{% if results is not none %}
+  <h2>{{ results|length }} bus{{ '' if results|length == 1 else 'es' }} found</h2>
+  {% for s in results %}
+  <article class="card result">
+    <div>
+      <strong>{{ s.operator }}</strong> <span class="badge">{{ s.bus_type }}</span>
+      <div class="times">{{ s.departure_time[11:16] }} &rarr; {{ s.arrival_time[11:16] }}
+        <span class="muted">({{ s.arrival_time[:10] }})</span></div>
+      <div class="muted">{{ s.seats_available }} of {{ s.total_seats }} seats available</div>
+    </div>
+    <div class="price">
+      <div class="amount">{{ s.fare_sen|rm }}</div>
+      {% if s.seats_available > 0 %}
+        <a class="button" href="{{ url_for('pages.seats', schedule_id=s.id) }}">Select seats</a>
+      {% else %}<span class="muted">Sold out</span>{% endif %}
+    </div>
+  </article>
+  {% else %}
+  <p class="muted">No buses match your search. Try another date.</p>
+  {% endfor %}
+{% endif %}
+{% endblock %}

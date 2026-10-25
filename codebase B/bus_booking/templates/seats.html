@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %}Select seats{% endblock %}
+{% block content %}
+<h1>{{ s.origin }} &rarr; {{ s.destination }}</h1>
+<p class="muted">{{ s.operator }} &middot; {{ s.bus_type }} &middot; Departs {{ s.departure_time }}
+  &middot; {{ s.fare_sen|rm }} per seat</p>
+<div id="booking-app" class="two-col" data-schedule-id="{{ s.id }}" data-max-seats="{{ max_seats }}">
+  <section class="card">
+    <h2>Select seats <span class="muted">(max {{ max_seats }})</span></h2>
+    <p class="legend"><span class="seat">Free</span> <span class="seat selected">Yours</span> <span class="seat taken">Taken</span></p>
+    <div id="seat-map" class="seat-map"></div>
+  </section>
+  <section class="card">
+    <form id="booking-form" novalidate>
+      <h2>Passengers</h2>
+      <p class="field-error" data-error-for="passengers"></p>
+      <div id="passenger-fields"></div>
+      <h2>Contact</h2>
+      <label>Email <input id="email" type="email" autocomplete="email"></label>
+      <small class="field-error" data-error-for="contact.email"></small>
+      <label>Phone <input id="phone" type="tel" placeholder="0123456789" autocomplete="tel"></label>
+      <small class="field-error" data-error-for="contact.phone"></small>
+      <div id="fare-summary"></div>
+      <p id="form-error" class="error" role="alert"></p>
+      <button type="submit" id="submit-btn" disabled>Confirm booking</button>
+    </form>
+  </section>
+</div>
+{% endblock %}
+{% block scripts %}<script src="{{ url_for('static', filename='js/booking.js') }}"></script>{% endblock %}

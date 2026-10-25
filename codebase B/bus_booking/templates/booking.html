@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block title %}Booking {{ b.reference }}{% endblock %}
+{% block content %}
+<h1>Booking {{ b.reference }} <span class="badge {{ b.status|lower }}">{{ b.status }}</span></h1>
+<section class="card">
+  <h2>{{ b.schedule.origin }} &rarr; {{ b.schedule.destination }}</h2>
+  <p>{{ b.schedule.operator }} &middot; {{ b.schedule.bus_type }}<br>
+     Departs {{ b.schedule.departure_time }} &middot; Arrives {{ b.schedule.arrival_time }}</p>
+  <table>
+    <thead><tr><th>Seat</th><th>Passenger</th><th>Age</th><th>Gender</th></tr></thead>
+    <tbody>{% for seat in b.seats %}
+      <tr><td>{{ seat.seat_number }}</td><td>{{ seat.passenger_name }}</td>
+          <td>{{ seat.passenger_age }}</td><td>{{ seat.passenger_gender }}</td></tr>
+    {% endfor %}</tbody>
+  </table>
+  <p>Contact: {{ b.contact_email }} &middot; {{ b.contact_phone }}</p>
+  <p class="amount">Total paid: {{ b.total_fare_sen|rm }}</p>
+  {% if b.can_cancel %}
+    <button id="cancel-btn" class="danger" data-reference="{{ b.reference }}">Cancel booking</button>
+  {% else %}
+    <p class="muted">{{ b.cancel_blocked_reason }}</p>
+  {% endif %}
+  <p id="cancel-error" class="error"></p>
+</section>
+{% endblock %}
+{% block scripts %}<script src="{{ url_for('static', filename='js/manage.js') }}"></script>{% endblock %}

@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}Admin{% endblock %}
+{% block content %}
+<h1>Admin: schedules</h1>
+<form id="schedule-form" class="card grid-form" data-id="">
+  <h2 id="form-title">Add schedule</h2>
+  <label>Operator <input name="operator" required></label>
+  <label>Bus type <select name="bus_type"><option>Express</option><option>VIP</option><option>Sleeper</option></select></label>
+  <label>Origin <input name="origin" required></label>
+  <label>Destination <input name="destination" required></label>
+  <label>Departure <input type="datetime-local" name="departure_time" required></label>
+  <label>Arrival <input type="datetime-local" name="arrival_time" required></label>
+  <label>Fare (RM) <input type="number" name="fare_rm" step="0.01" min="0.01" required></label>
+  <label>Total seats <input type="number" name="total_seats" min="1" max="60" value="40" required></label>
+  <label>Status <select name="status"><option>ACTIVE</option><option>CANCELLED</option></select></label>
+  <div><button type="submit">Save</button> <button type="button" id="reset-btn" class="secondary">New</button></div>
+  <p id="admin-error" class="error"></p>
+</form>
+<table>
+  <thead><tr><th>ID</th><th>Route</th><th>Operator</th><th>Departure</th><th>Fare</th><th>Seats free</th><th>Status</th><th></th></tr></thead>
+  <tbody>{% for s in schedules %}
+    <tr><td>{{ s.id }}</td><td>{{ s.origin }} &rarr; {{ s.destination }}</td>
+        <td>{{ s.operator }} ({{ s.bus_type }})</td><td>{{ s.departure_time }}</td>
+        <td>{{ s.fare_sen|rm }}</td><td>{{ s.seats_available }}/{{ s.total_seats }}</td><td>{{ s.status }}</td>
+        <td><button class="edit-btn secondary" data-schedule='{{ s|tojson }}'>Edit</button></td></tr>
+  {% endfor %}</tbody>
+</table>
+{% endblock %}
+{% block scripts %}<script src="{{ url_for('static', filename='js/admin.js') }}"></script>{% endblock %}

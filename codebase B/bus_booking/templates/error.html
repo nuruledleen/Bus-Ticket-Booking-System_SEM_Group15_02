@@ -1,0 +1,4 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card"><h1>{{ status }}</h1><p>{{ message }}</p><a href="{{ url_for('pages.index') }}">Back to search</a></div>
+{% endblock %}

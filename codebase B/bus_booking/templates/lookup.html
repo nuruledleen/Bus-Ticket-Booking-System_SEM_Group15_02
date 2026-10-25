@@ -1,0 +1,8 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Manage your booking</h1>
+<form class="card search" method="get" action="{{ url_for('pages.lookup') }}">
+  <label>Booking reference <input name="reference" placeholder="e.g. A1B2C3D4" required></label>
+  <button type="submit">Find booking</button>
+</form>
+{% endblock %}
