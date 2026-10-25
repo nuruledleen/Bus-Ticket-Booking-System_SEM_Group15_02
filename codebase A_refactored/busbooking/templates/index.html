@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Where are you going?</h1>
+<form class="card grid4" method="get" action="{{ url_for('index') }}">
+ <label>From<input name="origin" list="cities" value="{{ q.origin }}" required></label>
+ <label>To<input name="destination" list="cities" value="{{ q.destination }}" required></label>
+ <label>Travel date<input type="date" name="travel_date" min="{{ today }}" value="{{ q.travel_date or today }}" required></label>
+ <button class="btn">Search buses</button>
+ <datalist id="cities">{% for c in cities %}<option value="{{ c }}">{% endfor %}</datalist>
+</form>
+{% if results is not none %}
+ <h2>{{ q.origin }} to {{ q.destination }}, {{ q.travel_date }}</h2>
+ {% for r in results %}
+ <div class="card trip">
+  <div><strong>{{ r.departure_time }}</strong> to {{ r.arrival_time }}<br><small>{{ r.operator }}</small></div>
+  <div class="{{ 'low' if r.available < 6 }}">{{ r.available }} seat{{ '' if r.available == 1 else 's' }} left</div>
+  <div class="price">{{ r.fare|rm }}<small> per seat</small></div>
+  {% if r.available > 0 %}<a class="btn" href="{{ url_for('seats', sid=r.id) }}">Select seats</a>{% else %}<span class="muted">Sold out</span>{% endif %}
+ </div>
+ {% else %}<p class="card">No buses found. Try another date, or check the spelling of the cities.</p>{% endfor %}
+{% endif %}
+{% endblock %}

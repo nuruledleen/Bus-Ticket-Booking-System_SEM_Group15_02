@@ -1,0 +1,12 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>{% block title %}BusGo MY{% endblock %}</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}"></head>
+<body>
+<header><a class="logo" href="{{ url_for('index') }}">BusGo MY</a>
+<nav><a href="{{ url_for('index') }}">Search buses</a><a href="{{ url_for('lookup') }}">My bookings</a>
+<a href="{{ url_for('admin') }}">Admin</a>{% if session.admin %}<a href="{{ url_for('admin_logout') }}">Log out</a>{% endif %}</nav></header>
+<main>{% for cat, msg in get_flashed_messages(with_categories=true) %}<div class="flash {{ cat }}">{{ msg }}</div>{% endfor %}
+{% block content %}{% endblock %}</main>
+<footer>Demo system. Payments are simulated and no money is charged.</footer>
+</body></html>

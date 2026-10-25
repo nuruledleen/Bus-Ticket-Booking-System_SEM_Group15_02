@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>{{ s.origin }} to {{ s.destination }}</h1>
+<p>{{ s.operator }}, {{ s.travel_date }}, departs {{ s.departure_time }}, arrives {{ s.arrival_time }}. Fare {{ s.fare|rm }} per seat.</p>
+<form method="post" action="{{ url_for('book', sid=s.id) }}" id="f" data-fare="{{ s.fare }}" data-fee="{{ fee }}" data-max="{{ max_seats }}">
+<div class="split">
+ <section class="card"><h2>1. Choose seats (max {{ max_seats }})</h2>
+  <div class="bus"><div class="driver">Driver</div>
+  {% for row in rows %}<div class="row">{% for seat in row %}{% if loop.index == 3 %}<span class="aisle"></span>{% endif %}
+   <label class="seat{{ ' taken' if seat in taken }}"><input type="checkbox" name="seats" value="{{ seat }}"
+    {{ 'disabled' if seat in taken }} {{ 'checked' if seat in chosen }}><span>{{ seat }}</span></label>{% endfor %}</div>{% endfor %}
+  </div>
+  <p class="legend"><i class="seat-key free"></i>Available <i class="seat-key sel"></i>Selected <i class="seat-key tk"></i>Taken</p>
+ </section>
+ <section class="card"><h2>2. Passenger and contact details</h2>
+  <div id="pax"></div>
+  <label>Email<input type="email" name="email" value="{{ form.get('email', '') }}" maxlength="100" required></label>
+  <label>Mobile number<input name="phone" value="{{ form.get('phone', '') }}" placeholder="0123456789" required></label>
+  <label>Payment method<select name="payment_method" required>
+   {% for v, t in [('card', 'Credit / debit card'), ('fpx', 'Online banking (FPX)'), ('ewallet', 'e-Wallet')] %}
+   <option value="{{ v }}" {{ 'selected' if form.get('payment_method') == v }}>{{ t }}</option>{% endfor %}</select></label>
+  <p class="total"><span id="cnt">0</span> seat(s) x ({{ s.fare|rm }} + {{ fee|rm }} service fee)<br>Total: RM <strong id="total">0.00</strong></p>
+  <button class="btn">Pay and book</button>
+ </section>
+</div></form>
+<script>
+const f=document.getElementById('f'),pax=document.getElementById('pax'),max=+f.dataset.max,fare=+f.dataset.fare,fee=+f.dataset.fee;
+const saved={{ names|tojson }};
+function sync(e){
+ let boxes=[...f.querySelectorAll('input[name=seats]:checked')];
+ if(boxes.length>max&&e){e.target.checked=false;alert('You can book at most '+max+' seats.');boxes=boxes.filter(b=>b!==e.target);}
+ const old={};pax.querySelectorAll('input').forEach(i=>old[i.name]=i.value);pax.innerHTML='';
+ boxes.forEach(b=>{const n='name_'+b.value,l=document.createElement('label'),i=document.createElement('input');
+  l.textContent='Passenger name, seat '+b.value;i.name=n;i.required=true;i.maxLength=60;i.value=old[n]??saved[b.value]??'';l.appendChild(i);pax.appendChild(l);});
+ document.getElementById('cnt').textContent=boxes.length;
+ document.getElementById('total').textContent=(boxes.length*(fare+fee)).toFixed(2);
+}
+f.addEventListener('change',sync);sync();
+f.addEventListener('submit',e=>{if(!f.querySelector('input[name=seats]:checked')){e.preventDefault();alert('Select at least one seat.');}});
+</script>
+{% endblock %}

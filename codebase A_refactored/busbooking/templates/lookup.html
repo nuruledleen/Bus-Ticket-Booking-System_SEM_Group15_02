@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Find your booking</h1>
+<form class="card grid4" method="post">
+ <label>Booking reference<input name="reference" placeholder="BKDEMO01" required></label>
+ <label>Email used for booking<input type="email" name="email" placeholder="demo@example.com" required></label>
+ <button class="btn">View booking</button></form>
+{% if mine %}<h2>Bookings in this session</h2>
+<table class="card"><tr><th>Reference</th><th>Trip</th><th>Date</th><th>Status</th></tr>
+{% for m in mine %}<tr><td><a href="{{ url_for('booking', ref=m.reference) }}">{{ m.reference }}</a></td>
+<td>{{ m.origin }} to {{ m.destination }}</td><td>{{ m.travel_date }} {{ m.departure_time }}</td><td>{{ m.status }}</td></tr>{% endfor %}</table>{% endif %}
+{% endblock %}
